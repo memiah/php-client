@@ -50,7 +50,7 @@ class Client extends BaseClient
      * @param string $apiVersion
      * @param bool   $ssl
      */
-    function __construct($apiKey = null, $apiEndpoint = "api.storyblok.com", $apiVersion = "v1", $ssl = false)
+    public function __construct($apiKey = null, $apiEndpoint = "api.storyblok.com", $apiVersion = "v1", $ssl = false)
     {
         parent::__construct($apiKey, $apiEndpoint, $apiVersion, $ssl);
 
@@ -210,7 +210,7 @@ class Client extends BaseClient
      *
      * @return Integer
      */
-    function getCacheVersion()
+    public function getCacheVersion()
     {
         if (empty($this->cacheVersion)) {
             return time();
@@ -345,6 +345,10 @@ class Client extends BaseClient
                 'version' => $version,
                 'cache_version' => $this->getCacheVersion()
             ));
+
+            if ($this->resolveRelations) {
+                $options['resolve_relations'] = $this->resolveRelations;
+            }
 
             $response = $this->get($endpointUrl, $options);
 
@@ -597,7 +601,6 @@ class Client extends BaseClient
             $version == 'published' &&
             $response->httpResponseHeaders &&
             $response->httpResponseCode == 200) {
-
             $this->cache->save($response, $key);
         }
     }
@@ -609,7 +612,8 @@ class Client extends BaseClient
      * @param  string $key
      * @param  string $version
      */
-    private function _assignState($response) {
+    private function _assignState($response)
+    {
         $this->responseBody = $response->httpResponseBody;
         $this->responseHeaders = $response->httpResponseHeaders;
     }
@@ -621,15 +625,16 @@ class Client extends BaseClient
      * @param  string $key
      * @param  string $version
      */
-    private function _prepareOptionsForKey($options) {
+    private function _prepareOptionsForKey($options)
+    {
         $prepared = array();
         $keyOrder = array();
-        foreach($options as $key => $value) {
-           array_push($prepared, $value);
-           array_push($keyOrder, substr($key, 0, 1));
-       }
-       array_push($prepared, join('', $keyOrder));
-       return $prepared;
+        foreach ($options as $key => $value) {
+            array_push($prepared, $value);
+            array_push($keyOrder, substr($key, 0, 1));
+        }
+        array_push($prepared, join('', $keyOrder));
+        return $prepared;
     }
 
     private function _getCacheKey($key = '')
