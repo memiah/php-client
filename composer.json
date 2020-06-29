@@ -1,5 +1,5 @@
 {
-    "name": "storyblok/php-client",
+    "name": "memiah/storyblok-php-client",
     "description": "Storyblok Client to easily call the publishing api",
     "type": "library",
     "keywords": ["storyblok"],
